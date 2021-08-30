@@ -120,6 +120,12 @@ public class AppointmentsScreenController implements Initializable {
     @FXML
     private TextField customerName;
 
+    /**
+     * The JavaFX initialize method.
+     *
+     * @param url the url
+     * @param rb  the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
@@ -141,7 +147,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Populate appointments table method.
+     * The populate appointments table method.
      */
     @FXML
     public void populateTable() {
@@ -189,16 +195,16 @@ public class AppointmentsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * All radio button.
+     * The return all appointment records radio button.
      *
      * @param event the event
      */
@@ -208,7 +214,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Month radio button.
+     * The return all appointments by current month radio button method.
      *
      * @param event the event
      */
@@ -218,7 +224,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Week radio button.
+     * The return all appointments by current week radio button method.
      *
      * @param event the event
      */
@@ -228,7 +234,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * On action add.
+     * The action add method.
      *
      * @param event the event
      */
@@ -239,7 +245,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * On action update.
+     * The action update method.
      *
      * @param event the event
      */
@@ -263,14 +269,13 @@ public class AppointmentsScreenController implements Initializable {
             customerIDComboBox.setValue(selectedAppointment.getCustomerID());
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
             alert.setContentText("No appointment selected for this action.");
             alert.showAndWait();
         }
     }
 
     /**
-     * On action save.
+     * The on action save method.
      *
      * @param event the event
      */
@@ -308,7 +313,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (title.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment title.");
                 alert.showAndWait();
                 return;
@@ -316,7 +320,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (description.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment description.");
                 alert.showAndWait();
                 return;
@@ -324,7 +327,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (location == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment location.");
                 alert.showAndWait();
                 return;
@@ -332,7 +334,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (tempContact == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment contact.");
                 alert.showAndWait();
                 return;
@@ -341,7 +342,6 @@ public class AppointmentsScreenController implements Initializable {
             if (type == null) {
 
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment type.");
                 alert.showAndWait();
                 return;
@@ -349,7 +349,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (startBox == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment start time.");
                 alert.showAndWait();
                 return;
@@ -357,7 +356,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (endBox == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select an appointment end time.");
                 alert.showAndWait();
                 return;
@@ -365,7 +363,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (startBox.isAfter(endBox) || startBox.equals(endBox)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("The appointment time cannot not begin before or at the\n" +
                         "same time as the appointment start time.");
                 alert.showAndWait();
@@ -378,7 +375,6 @@ public class AppointmentsScreenController implements Initializable {
 
             if (customerIDComboBox.getValue() == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select a customer ID.");
                 alert.showAndWait();
                 return;
@@ -386,7 +382,7 @@ public class AppointmentsScreenController implements Initializable {
 
             if (overlappingAppointments(start, end)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Selected appointment time is unavailable");
+                alert.setHeaderText("Selected appointment time frame is unavailable");
                 alert.setContentText("Please check the appointment list for available times and then "
                         + "try any of the following:\n"
                         + "1. Please select a different appointment start and end time.\n"
@@ -416,20 +412,14 @@ public class AppointmentsScreenController implements Initializable {
                 ps.setInt(11, contactID);
 
                 int result = ps.executeUpdate();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 if (result > 0) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText("Appointment has been created successfully!");
-                    alert.showAndWait();
                 } else {
-                    System.out.println("\nNo save? Check DB.\n");
+                    alert.setContentText("There was an issue with saving this appointment; " +
+                            "\nplease check your DB logs for more info.");
                 }
-
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-
-                    int autoKey = rs.getInt(1);
-                    System.out.println("Generated Appointment ID: " + autoKey);
-                }
+                alert.showAndWait();
 
                 populateTable();
                 onActionClearAllFields(event);
@@ -455,26 +445,31 @@ public class AppointmentsScreenController implements Initializable {
                 ps.setInt(11, Integer.parseInt(appointmentID.getText()));
 
                 int result = ps.executeUpdate();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 if (result == 1) {
-                    System.out.println("\nSave Succesful!\n");
+                    alert.setContentText("Appointment has been updated successfully!");
                 } else {
-                    System.out.println("\nNo save? Check DB.\n");
+                    alert.setContentText("There was an issue with updating this appointment; " +
+                            "\nplease check your DB logs for more info.");
                 }
+                alert.showAndWait();
 
                 populateTable();
                 onActionClearAllFields(event);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * On action clear all fields.
+     * The on action clear all appointment fields method.
      *
      * @param event the event
      */
@@ -484,7 +479,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Clear all fields.
+     * The clear all appointment fields method.
      */
     public void clearAllFields() {
         appointmentID.clear();
@@ -500,7 +495,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * On action delete.
+     * The on action delete method.
      *
      * @param event the event
      */
@@ -522,21 +517,22 @@ public class AppointmentsScreenController implements Initializable {
                     ps.setInt(1, selectedAppointment.getAppointmentID());
 
                     int rs = ps.executeUpdate();
+                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
                     if (rs > 0) {
-                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
                         alert2.setHeaderText("Cancelled appointment #" + selectedAppointment.getAppointmentID());
                     } else {
-                        System.out.println("\nOne item failed to delete.\n");
+                        alert2.setHeaderText("Unable to cancel appointment #" + selectedAppointment.getAppointmentID());
+
                     }
                     populateTable();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
-                    System.out.println("SQL error!");
+                    System.out.println("SQL error! Please check your database logs for more information");
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
-                    System.out.println("Non-SQL error!");
+                    System.out.println("Non-SQL error! Please try again.");
                 }
             } else {
                 return;
@@ -548,21 +544,6 @@ public class AppointmentsScreenController implements Initializable {
             alert.setContentText("Please select an appointment to delete.");
             alert.showAndWait();
         }
-    }
-
-    /**
-     * On action main return.
-     *
-     * @param event the event
-     * @throws IOException the io exception
-     */
-    @FXML
-    public void onActionMainReturn(ActionEvent event) throws IOException {
-        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainMenuScreen.fxml")));
-        stage.setScene(new Scene(scene));
-        stage.centerOnScreen();
-        stage.show();
     }
 
     private void populateLocationComboBox() {
@@ -591,16 +572,18 @@ public class AppointmentsScreenController implements Initializable {
                 }
             });
         } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * Populate contact combo box.
+     * The populate contact combo box method.
      */
     @FXML
     public void populateContactComboBox() {
@@ -635,16 +618,16 @@ public class AppointmentsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * Populate type combo box.
+     * The populate type combo box method.
      */
     @FXML
     public void populateTypeComboBox() {
@@ -668,7 +651,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Populate dat time combo boxes.
+     * The populate date and time combo boxes method.
      */
     @FXML
     public void populateDatTimeComboBoxes() {
@@ -686,7 +669,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Populate customer combo box.
+     * the populate customer combo box method.
      */
     @FXML
     public void populateCustomerComboBox() {
@@ -718,16 +701,16 @@ public class AppointmentsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * Populate customer name.
+     * The populate the customer name method.
      *
      * @param event the event
      */
@@ -749,14 +732,20 @@ public class AppointmentsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
+    /**
+     * The get contact ID from list method.
+     *
+     * @param temp the temporary contact filler.
+     * @return -1
+     */
     private int getContactIDFromList(String temp) {
         for (Contact look : contactList) {
             if (look.getContactName().trim().toLowerCase().contains(temp.trim().toLowerCase())) {
@@ -766,11 +755,18 @@ public class AppointmentsScreenController implements Initializable {
         return -1;
     }
 
+    /**
+     * The check for business hours method.
+     *
+     * @param startTime the appointment start time
+     * @return false
+     */
     private boolean checkBusinessHours(LocalTime startTime) {
-        LocalTime officeClosed = LocalTime.of(22, 00);
-        LocalTime officeOpen = LocalTime.of(8, 00);
+        LocalTime officeClosed = LocalTime.of(22, 0);
+        LocalTime officeOpen = LocalTime.of(8, 0);
         LocalDate date = appointmentDatePicker.getValue();
 
+        // Specify the time zone.
         ZoneId zoneEST = ZoneId.of("US/Eastern");
 
         LocalDateTime combined = LocalDateTime.of(date, startTime);
@@ -789,6 +785,13 @@ public class AppointmentsScreenController implements Initializable {
         return false;
     }
 
+    /**
+     * The check for overlapping appointments method.
+     *
+     * @param startA start time
+     * @param endB   end time
+     * @return false
+     */
     private boolean overlappingAppointments(Timestamp startA, Timestamp endB) {
         try {
             if (appointmentID.getText().isBlank()) {
@@ -818,17 +821,17 @@ public class AppointmentsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
         return false;
     }
 
     /**
-     * Filter appointments by the current week.
+     * The filter appointments by the current week method.
      * <p>
      * Lambda usage: A lambda expression is used here because the original method uses a prepared SQL statement which
      * was inefficient. We use a filtered list here which results in an "always true" predicate which is more efficient
@@ -836,6 +839,7 @@ public class AppointmentsScreenController implements Initializable {
      * primarily used in the weekRadio() method. This method filters the given list based on the contents of the
      * appointments table and by the current day and end of the week.
      * </p>
+     *
      * @param aList the appointments list
      */
     private void filterByCurrentWeek(ObservableList aList) {
@@ -853,7 +857,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * Filter appointments by the current month.
+     * The filter appointments by the current month method.
      * <p>
      * Lambda usage: Just like the filterByCurrentWeek() method, a lambda expression is used here because the original
      * method uses a prepared SQL statement which was inefficient. We use a filtered list here which results in an
@@ -861,6 +865,7 @@ public class AppointmentsScreenController implements Initializable {
      * method easily readable. This method is primarily used in the monthRadio() method. This method filters the given
      * list based on the contents of the appointments table and by the current day and end of the month.
      * </p>
+     *
      * @param aList the appointments list
      */
     private void filterByCurrentMonth(ObservableList aList) {
@@ -876,8 +881,29 @@ public class AppointmentsScreenController implements Initializable {
         appointmentTable.setItems(resultEndOfMonth);
     }
 
+    /**
+     * The on action return main menu return method.
+     *
+     * @param event the event
+     * @throws IOException the io exception
+     */
     @FXML
-    private void onActionExit(ActionEvent e) {
+    public void onActionReturnToMainMenu(ActionEvent event) throws IOException {
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainMenuScreen.fxml")));
+        stage.setScene(new Scene(scene));
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    /**
+     * The on action exit application method.
+     *
+     * @param event the event
+     * @throws SQLException the sql exception
+     */
+    @FXML
+    public void onActionExit(ActionEvent event) throws SQLException {
         closeConnection();
         System.exit(0);
     }

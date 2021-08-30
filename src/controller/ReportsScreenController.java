@@ -29,11 +29,22 @@ import static utils.DBConnection.closeConnection;
 /**
  * The Reports screen controller class.
  *
- * @author Christian Lopez
- * Software II - C195
+ * @author Christian Lopez Software II - C195
  */
 public class ReportsScreenController implements Initializable {
     private static final Connection conn = DBConnection.getConn();
+    /**
+     * The Contact table tab.
+     */
+    public Tab contactTableTab;
+    /**
+     * The Type month tab.
+     */
+    public Tab typeMonthTab;
+    /**
+     * The Custom report tab.
+     */
+    public Tab customReportTab;
     /**
      * The Stage.
      */
@@ -88,6 +99,11 @@ public class ReportsScreenController implements Initializable {
     @FXML
     private TableColumn<ReportType, String> customReportTotalColumn;
 
+    /**
+     * The JavaFX initialize method.
+     * @param url the url
+     * @param rb the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         dayColumn.setCellValueFactory(new PropertyValueFactory<>("day"));
@@ -111,6 +127,9 @@ public class ReportsScreenController implements Initializable {
         populateCustomReport();
     }
 
+    /**
+     * The populate appointment type by month report method.
+     */
     private void populateTypeMonthTab() {
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -133,13 +152,17 @@ public class ReportsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL Error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-Sql error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
+    /**
+     * The populate contacts report method.
+     */
     private void populateContactsTab() {
         try {
             AppointmentListReport.clear();
@@ -178,14 +201,17 @@ public class ReportsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
-
     }
 
+    /**
+     * The populate contacts combo box method.
+     */
     private void populateContactsComboBox() {
         ObservableList<String> contactCombo = FXCollections.observableArrayList();
         try {
@@ -218,16 +244,16 @@ public class ReportsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
-
     }
 
     /**
-     * On action contact.
+     * The on action contact method.
      *
      * @param event the event
      */
@@ -276,13 +302,21 @@ public class ReportsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
+    /**
+     * The populate custom report method.
+     * <p>
+     * This is the custom report I created for section A3f of the requirements section. This report calculates the total
+     * number of appointments by day of the week.
+     * </p>
+     */
     private void populateCustomReport() {
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -303,21 +337,22 @@ public class ReportsScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL Error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-Sql error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * On action main return.
+     * The on action return to main menu method.
      *
      * @param event the event
      * @throws IOException the io exception
      */
     @FXML
-    void onActionMainReturn(ActionEvent event) throws IOException {
+    void onActionReturnToMainMenu(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
 
         scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainMenuScreen.fxml")));
@@ -327,12 +362,13 @@ public class ReportsScreenController implements Initializable {
     }
 
     /**
-     * On action exit.
+     * The on action exit application method.
      *
      * @param event the event
+     * @throws SQLException the sql exception
      */
     @FXML
-    void onActionExit(ActionEvent event) {
+    public void onActionExit(ActionEvent event) throws SQLException {
         closeConnection();
         System.exit(0);
     }

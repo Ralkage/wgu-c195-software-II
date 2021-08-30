@@ -72,6 +72,11 @@ public class LoginScreenController implements Initializable {
     @FXML
     private Label locationLabel;
 
+    /**
+     * The JavaFX initialize method.
+     * @param url the url
+     * @param rb the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Uncomment the line below to test second language
@@ -91,7 +96,7 @@ public class LoginScreenController implements Initializable {
     }
 
     /**
-     * On action log in.
+     * The on action log in method.
      *
      * @param event the event
      */
@@ -161,6 +166,9 @@ public class LoginScreenController implements Initializable {
         }
     }
 
+    /**
+     * The appointment alert method.
+     */
     private void appointmentAlert() {
         try {
             ResourceBundle rb = ResourceBundle.getBundle("LoginScreen", Locale.getDefault());
@@ -231,8 +239,15 @@ public class LoginScreenController implements Initializable {
 
     }
 
+
+    /**
+     * The on action exit application method.
+     *
+     * @param event the event
+     * @throws SQLException the sql exception
+     */
     @FXML
-    private void onActionExit(ActionEvent e) throws SQLException {
+    public void onActionExit(ActionEvent event) throws SQLException {
         closeConnection();
         System.exit(0);
     }

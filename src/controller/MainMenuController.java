@@ -59,7 +59,7 @@ public class MainMenuController implements Initializable
     }
 
     /**
-     * On action customer.
+     * The on action customer method.
      *
      * @param event the event
      * @throws IOException the io exception
@@ -76,7 +76,7 @@ public class MainMenuController implements Initializable
     }
 
     /**
-     * On action reports.
+     * The on action reports method.
      *
      * @param event the event
      * @throws IOException the io exception
@@ -92,15 +92,15 @@ public class MainMenuController implements Initializable
 
     }
 
+
     /**
-     * On action exit.
+     * The on action exit application method.
      *
      * @param event the event
      * @throws SQLException the sql exception
      */
     @FXML
-    public void onActionExit(ActionEvent event) throws SQLException
-    {
+    public void onActionExit(ActionEvent event) throws SQLException {
         closeConnection();
         System.exit(0);
     }

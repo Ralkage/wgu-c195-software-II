@@ -61,7 +61,7 @@ public class CustomersScreenController implements Initializable {
      */
     ObservableList<Country> countryList = FXCollections.observableArrayList();
     /**
-     * The First level list.
+     * The First Level Division list.
      */
     ObservableList<FirstLevelDivision> firstLevelList = FXCollections.observableArrayList();
     private Customer selectedCustomer;
@@ -98,6 +98,12 @@ public class CustomersScreenController implements Initializable {
     @FXML
     private TextField customerPhone;
 
+    /**
+     * The JavaFX initialize method.
+     *
+     * @param url the url
+     * @param rb  the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerID"));
@@ -114,7 +120,23 @@ public class CustomersScreenController implements Initializable {
     }
 
     /**
-     * Populate table.
+     * The get Division ID from list method.
+     *
+     * @param temp the temporary Division ID filler.
+     * @return -1
+     */
+    private int getDivisionIDFromList(String temp) {
+        for (FirstLevelDivision look : firstLevelList) {
+            if (look.getDivision().trim().toLowerCase().contains(
+                    temp.trim().toLowerCase())) {
+                return look.getDivisionID();
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * The populate customer table method.
      */
     @FXML
     public void populateTable() {
@@ -150,16 +172,16 @@ public class CustomersScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL Error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-Sql error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * Populate first level combo.
+     * The populate first level division combo method.
      */
     @FXML
     public void populateFirstLevelCombo() {
@@ -200,16 +222,16 @@ public class CustomersScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * On action country.
+     * The action customer country method.
      *
      * @param event the event
      */
@@ -269,16 +291,16 @@ public class CustomersScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * Populate country combo.
+     * The populate customer country combo method.
      */
     @FXML
     public void populateCountryCombo() {
@@ -318,16 +340,16 @@ public class CustomersScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * On action add.
+     * The on action add customer record method.
      *
      * @param event the event
      */
@@ -338,7 +360,7 @@ public class CustomersScreenController implements Initializable {
     }
 
     /**
-     * On action update.
+     * The on action update customer record method.
      *
      * @param event the event
      */
@@ -357,7 +379,6 @@ public class CustomersScreenController implements Initializable {
             customerPhone.setText(selectedCustomer.getPhone());
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
             alert.setContentText("Please select a customer from the customers table.");
             alert.showAndWait();
         }
@@ -365,7 +386,7 @@ public class CustomersScreenController implements Initializable {
     }
 
     /**
-     * On action save.
+     * The on action save customer record method.
      *
      * @param event the event
      */
@@ -385,42 +406,36 @@ public class CustomersScreenController implements Initializable {
 
             if (customerName.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("The Name field is empty.");
                 alert.showAndWait();
                 return;
             }
             if (address.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("The Address field is empty.");
                 alert.showAndWait();
                 return;
             }
             if (stateComboBox.getValue() == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select a State/Province.");
                 alert.showAndWait();
                 return;
             }
             if (countryComboBox.getValue() == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("Please select a Country.");
                 alert.showAndWait();
                 return;
             }
             if (postalCode.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("The Postal Code field is empty.");
                 alert.showAndWait();
                 return;
             }
             if (phoneNumber.isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error Dialog");
                 alert.setContentText("The Phone Number field is empty.");
                 alert.showAndWait();
                 return;
@@ -442,17 +457,11 @@ public class CustomersScreenController implements Initializable {
                 ps.setInt(7, divisionID);
 
                 int result = ps.executeUpdate();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 if (result > 0) {
-                    System.out.println("\n" + customerName + " added!\n");
+                    alert.setContentText("Customer " + customerName + " added!");
                 } else {
-                    System.out.println("\nNo save? Check DB.\n");
-                }
-
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-
-                    int autoKey = rs.getInt(1);
-                    System.out.println("Generated Customer ID: " + autoKey);
+                    alert.setContentText("There was an issue saving changes \nfor customer " + customerName);
                 }
 
                 populateTable();
@@ -475,11 +484,13 @@ public class CustomersScreenController implements Initializable {
                 ps.setInt(7, Integer.parseInt(customerID.getText()));
 
                 int result = ps.executeUpdate();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 if (result == 1) {
-                    System.out.println("\n" + customerName + " updated.\n");
+                    alert.setContentText("Customer " + customerName + " updated");
                 } else {
-                    System.out.println("\nSave error\n");
+                    alert.setContentText("There was an issue saving changes for customer " + customerName);
                 }
+                alert.showAndWait();
 
                 populateTable();
                 clearALL();
@@ -487,16 +498,16 @@ public class CustomersScreenController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("SQL error!");
+            System.out.println("SQL error! Please check your database logs for more information");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            System.out.println("Non-SQL error!");
+            System.out.println("Non-SQL error! Please try again.");
         }
     }
 
     /**
-     * On action clear.
+     * The on action clear all fields method.
      *
      * @param event the event
      */
@@ -515,7 +526,7 @@ public class CustomersScreenController implements Initializable {
     }
 
     /**
-     * On action delete.
+     * The on action delete customer method.
      *
      * @param event the event
      */
@@ -525,9 +536,9 @@ public class CustomersScreenController implements Initializable {
 
         if (selectedCustomer != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation Dialog");
-            alert.setHeaderText("Delete Customer " + selectedCustomer.getCustomerName());
-            alert.setContentText("This will also delete all associated appointments.");
+            alert.setHeaderText("Are you sure that you want to delete customer " + selectedCustomer.getCustomerName()
+                    + "?");
+            alert.setContentText("Deleting this customer will also delete \nall associating appointments");
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.get() == ButtonType.OK) {
@@ -541,23 +552,24 @@ public class CustomersScreenController implements Initializable {
 
                     ps.setInt(1, selectedCustomer.getCustomerID());
                     ps2.setInt(1, selectedCustomer.getCustomerID());
-                    int rs = ps.executeUpdate();
                     int rs2 = ps2.executeUpdate();
 
+                    Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
                     if (rs2 > 0) {
-                        System.out.println("\nCustomer " + selectedCustomer.getCustomerName()
-                                + " and associated appointments deleted\n");
+                        alert2.setContentText("Customer " + selectedCustomer.getCustomerName() + " and associated " +
+                                "appointments have been deleted.");
                     } else {
-                        System.out.println("\nOne item failed to delete.\n");
+                        alert.setContentText("There was an issue with deleting \nrecords for customer " + customerName);
                     }
                     populateTable();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     System.out.println(e.getMessage());
-                    System.out.println("SQL error!");
+                    System.out.println("SQL error! Please check your database logs for more information");
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println(e.getMessage());
-                    System.out.println("Non-SQL error!");
+                    System.out.println("Non-SQL error! Please try again.");
                 }
             } else {
                 return;
@@ -565,14 +577,28 @@ public class CustomersScreenController implements Initializable {
         }
         if (selectedCustomer == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
             alert.setContentText("Select a customer to delete");
             alert.showAndWait();
         }
     }
 
     /**
-     * On action exit.
+     * The action return to main menu method.
+     *
+     * @param event the event
+     * @throws IOException the io exception
+     */
+    @FXML
+    public void onActionReturnToMainMenu(ActionEvent event) throws IOException {
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainMenuScreen.fxml")));
+        stage.setScene(new Scene(scene));
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    /**
+     * The on action exit application method.
      *
      * @param event the event
      * @throws SQLException the sql exception
@@ -581,30 +607,5 @@ public class CustomersScreenController implements Initializable {
     public void onActionExit(ActionEvent event) throws SQLException {
         closeConnection();
         System.exit(0);
-    }
-
-    /**
-     * On action main return.
-     *
-     * @param event the event
-     * @throws IOException the io exception
-     */
-    @FXML
-    public void onActionMainReturn(ActionEvent event) throws IOException {
-        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/view/MainMenuScreen.fxml")));
-        stage.setScene(new Scene(scene));
-        stage.centerOnScreen();
-        stage.show();
-    }
-
-    private int getDivisionIDFromList(String temp) {
-        for (FirstLevelDivision look : firstLevelList) {
-            if (look.getDivision().trim().toLowerCase().contains(
-                    temp.trim().toLowerCase())) {
-                return look.getDivisionID();
-            }
-        }
-        return -1;
     }
 }

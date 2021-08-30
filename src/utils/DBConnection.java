@@ -24,7 +24,7 @@ public class DBConnection {
     private static Connection conn = null;
 
     /**
-     * Start connection.
+     * Start the DB connection.
      */
     public static void startConnection() {
         try {
@@ -40,7 +40,7 @@ public class DBConnection {
     }
 
     /**
-     * Close connection.
+     * Close the DB connection.
      */
     public static void closeConnection() {
         try {
@@ -52,7 +52,7 @@ public class DBConnection {
     }
 
     /**
-     * Gets DB connection.
+     * Gets the DB connection.
      *
      * @return the DB connection.
      */
