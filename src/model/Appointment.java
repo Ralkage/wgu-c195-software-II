@@ -6,8 +6,7 @@ import java.time.LocalDateTime;
 /**
  * The Appointments model class.
  *
- * @author Christian Lopez
- * Software II - C195
+ * @author Christian Lopez Software II - C195
  */
 public class Appointment {
     private int appointmentID;
@@ -26,6 +25,7 @@ public class Appointment {
     private int contactID;
     private String contactName;
     private String customerName;
+    private String userName;
 
     /**
      * Instantiates a new Appointment.
@@ -60,7 +60,8 @@ public class Appointment {
      */
     public Appointment(int appointmentID, String title, String description, String location, String type,
                        LocalDateTime start, LocalDateTime end, LocalDateTime createDate, String createdBy,
-                       Timestamp lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID, String contactName, String customerName) {
+                       Timestamp lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID,
+                       String contactName, String customerName) {
         setAppointmentID(appointmentID);
         setTitle(title);
         setDescription(description);
@@ -98,7 +99,10 @@ public class Appointment {
      * @param contactID     the contact id
      * @param contactName   the contact name
      */
-    public Appointment(int appointmentID, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, LocalDateTime createdDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID, String contactName) {
+    public Appointment(int appointmentID, String title, String description, String location, String type,
+                       LocalDateTime start, LocalDateTime end, LocalDateTime createdDate,
+                       String createdBy, Timestamp lastUpdate, String lastUpdatedBy,
+                       int customerID, int userID, int contactID, String contactName) {
         setAppointmentID(appointmentID);
         setTitle(title);
         setDescription(description);
@@ -402,5 +406,23 @@ public class Appointment {
      */
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    /**
+     * Gets the appointment username.
+     *
+     * @return the appointment customer username
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * Sets the appointment username.
+     *
+     * @param userName the appointment username
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

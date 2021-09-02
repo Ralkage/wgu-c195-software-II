@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -101,18 +102,25 @@ public class CustomersScreenController implements Initializable {
     /**
      * The JavaFX initialize method.
      *
+     * <p>
+     * Lambda usage: This is the second case for lambda implementation for this project. We use lambda expressions over
+     * PropertyValueFactory to initialize the table data within their respective Customers TableView columns. We don't
+     * use a lambda expression for customerIdColumn because ReadOnlyIntegerWrapper() cannot be converted to
+     * ObservableValue.
+     * </p>
+     *
      * @param url the url
      * @param rb  the resource bundle
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerID"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-        countryColumn.setCellValueFactory(new PropertyValueFactory<>("countryName"));
-        divisionColumn.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
-        zipColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        nameColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCustomerName()));
+        phoneColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPhone()));
+        addressColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAddress()));
+        countryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCountryName()));
+        divisionColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDivisionName()));
+        zipColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPostalCode()));
 
         populateTable();
         populateCountryCombo();
@@ -240,9 +248,14 @@ public class CustomersScreenController implements Initializable {
         try {
             ObservableList<String> stateCombo = FXCollections.observableArrayList();
 
+
+            ps = conn.prepareStatement(
+                    "SELECT * FROM first_level_divisions");
+
             if (countryComboBox.getValue() == null) {
                 populateFirstLevelCombo();
             }
+
             if (countryComboBox.getValue().contentEquals("United States")) {
                 ps = conn.prepareStatement(
                         "SELECT * FROM first_level_divisions WHERE COUNTRY_ID = 231 "
@@ -538,7 +551,7 @@ public class CustomersScreenController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("Are you sure that you want to delete customer " + selectedCustomer.getCustomerName()
                     + "?");
-            alert.setContentText("Deleting this customer will also delete \nall associating appointments");
+            alert.setContentText("Deleting this customer will also delete all associating appointments.");
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.get() == ButtonType.OK) {
@@ -552,6 +565,7 @@ public class CustomersScreenController implements Initializable {
 
                     ps.setInt(1, selectedCustomer.getCustomerID());
                     ps2.setInt(1, selectedCustomer.getCustomerID());
+                    ps.executeUpdate();
                     int rs2 = ps2.executeUpdate();
 
                     Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);

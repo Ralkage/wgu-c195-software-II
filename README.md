@@ -28,6 +28,7 @@ settings > libraries. You have the option to comment out lines 86-87 to enter th
 yourself or run this application and login with the already filled out username and password fields. The
 username and password to use in this application is test/test respectively for reference purposes.
 
-The custom report built for this project as part opf the A3f requirement calculates the total number of appointments by day of week.
+The custom report built for this project as part opf the A3f requirement calculates the total number of customers by
+country and is represented by a pie chart.
 
 MySQL Connector Version: mysql-connector-java-8.0.22

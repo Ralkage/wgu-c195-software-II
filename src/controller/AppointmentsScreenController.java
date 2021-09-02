@@ -25,6 +25,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import static utils.DBConnection.closeConnection;
 
@@ -60,6 +61,7 @@ public class AppointmentsScreenController implements Initializable {
      * The Customer id.
      */
     int customerID = -1;
+
     /**
      * The Appointment id 1.
      */
@@ -119,6 +121,10 @@ public class AppointmentsScreenController implements Initializable {
     private ComboBox<Integer> customerIDComboBox;
     @FXML
     private TextField customerName;
+    @FXML
+    private ComboBox<Integer> userIDComboBox;
+    @FXML
+    private TextField userName;
 
     /**
      * The JavaFX initialize method.
@@ -144,6 +150,7 @@ public class AppointmentsScreenController implements Initializable {
         populateTypeComboBox();
         populateDatTimeComboBoxes();
         populateCustomerComboBox();
+        populateUserIDComboBox();
     }
 
     /**
@@ -182,9 +189,10 @@ public class AppointmentsScreenController implements Initializable {
                 Timestamp lastUpdate = rs.getTimestamp("Last_Update");
                 String lastUpdatedBy = rs.getString("Last_Updated_By");
                 int contactID = rs.getInt("Contact_ID");
-                String email = rs.getString("Email");
 
-                int userID = User.getUserId();
+                int userID = rs.getInt("User_ID");
+                String userName = rs.getString("User_Name");
+
 
                 appointmentList.add(new Appointment(appointmentID, title, description,
                         location, type, start, end, createdDate, createdBy, lastUpdate,
@@ -267,6 +275,8 @@ public class AppointmentsScreenController implements Initializable {
             startComboBox.getSelectionModel().select(selectedAppointment.getStart().toLocalTime());
             endComboBox.getSelectionModel().select(selectedAppointment.getEnd().toLocalTime());
             customerIDComboBox.setValue(selectedAppointment.getCustomerID());
+
+            userIDComboBox.setValue(selectedAppointment.getUserID());;
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("No appointment selected for this action.");
@@ -304,6 +314,11 @@ public class AppointmentsScreenController implements Initializable {
             }
 
             int userID = User.getUserId();
+
+            if (userIDComboBox.getValue() != null) {
+                userID = userIDComboBox.getValue();
+            }
+
             String tempContact = contactComboBox.getValue();
 
             if (tempContact != null) {
@@ -376,6 +391,13 @@ public class AppointmentsScreenController implements Initializable {
             if (customerIDComboBox.getValue() == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Please select a customer ID.");
+                alert.showAndWait();
+                return;
+            }
+
+            if (userIDComboBox.getValue() == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please select a User ID.");
                 alert.showAndWait();
                 return;
             }
@@ -506,7 +528,10 @@ public class AppointmentsScreenController implements Initializable {
         if (selectedAppointment != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation Dialog");
-            alert.setHeaderText("Cancel Appointment " + selectedAppointment.getAppointmentID() + "?");
+            alert.setHeaderText("Cancel Appointment #" + selectedAppointment.getAppointmentID()
+                    + " - "
+                    + selectedAppointment.getType()
+                    + "?");
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.get() == ButtonType.OK) {
@@ -546,7 +571,11 @@ public class AppointmentsScreenController implements Initializable {
         }
     }
 
-    private void populateLocationComboBox() {
+    /**
+     * Populate location combo box method.
+     */
+    @FXML
+    public void populateLocationComboBox() {
         ObservableList<String> locationCombo = FXCollections.observableArrayList();
         try {
             PreparedStatement ps = conn.prepareStatement(
@@ -583,7 +612,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * The populate contact combo box method.
+     * Populate contact combo box method.
      */
     @FXML
     public void populateContactComboBox() {
@@ -627,7 +656,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * The populate type combo box method.
+     * Populate type combo box method.
      */
     @FXML
     public void populateTypeComboBox() {
@@ -651,7 +680,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * The populate date and time combo boxes method.
+     * Populate date and time combo boxes method.
      */
     @FXML
     public void populateDatTimeComboBoxes() {
@@ -669,7 +698,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * the populate customer combo box method.
+     * Populate customer combo box method.
      */
     @FXML
     public void populateCustomerComboBox() {
@@ -710,7 +739,7 @@ public class AppointmentsScreenController implements Initializable {
     }
 
     /**
-     * The populate the customer name method.
+     * Populate customer name method.
      *
      * @param event the event
      */
@@ -729,6 +758,71 @@ public class AppointmentsScreenController implements Initializable {
             while (rs.next()) {
                 customerName.setText(rs.getString("Customer_Name"));
             }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.println("SQL error! Please check your database logs for more information");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.println("Non-SQL error! Please try again.");
+        }
+    }
+
+
+    /**
+     * Populate user ID combo box method.
+     */
+    @FXML
+    public void populateUserIDComboBox() {
+        ObservableList<Integer> userIDCombo = FXCollections.observableArrayList();
+
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT User_ID "
+                    + "FROM users ORDER BY User_ID");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                userIDCombo.add(rs.getInt("User_ID"));
+            }
+            userIDComboBox.setItems(userIDCombo);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.println("SQL error! Please check your database logs for more information");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.out.println("Non-SQL error! Please try again.");
+        }
+    }
+
+    /**
+     * Populate username method.
+     *
+     * @param event the event
+     */
+    @FXML
+    public void populateUserName(ActionEvent event) {
+        try {
+            int searchID = userIDComboBox.getValue();
+
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM users "
+                    + "WHERE User_ID = ?");
+
+            ps.setInt(1, searchID);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                userName.setText(rs.getString("User_Name"));
+            }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -833,17 +927,17 @@ public class AppointmentsScreenController implements Initializable {
     /**
      * The filter appointments by the current week method.
      * <p>
-     * Lambda usage: A lambda expression is used here because the original method uses a prepared SQL statement which
-     * was inefficient. We use a filtered list here which results in an "always true" predicate which is more efficient
-     * in it's use in this class and uses less lines of code making this method easily readable. This method is
-     * primarily used in the weekRadio() method. This method filters the given list based on the contents of the
-     * appointments table and by the current day and end of the week.
+     * Lambda usage: This is the first case for lambda implementation for this project. A lambda expression is used here
+     * because the original method uses a prepared SQL statement which was inefficient. We use a filtered list here
+     * which results in an "always true" predicate which is more efficient in it's use in this class and uses less
+     * lines of code making this method easily readable. This method is primarily used in the weekRadio() method.
+     * This method filters the given list based on the contents of the appointments table and by the current day and end
+     * of the week.
      * </p>
      *
      * @param aList the appointments list
      */
     private void filterByCurrentWeek(ObservableList aList) {
-
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime week = LocalDateTime.now().plusDays(7);
 
@@ -858,13 +952,6 @@ public class AppointmentsScreenController implements Initializable {
 
     /**
      * The filter appointments by the current month method.
-     * <p>
-     * Lambda usage: Just like the filterByCurrentWeek() method, a lambda expression is used here because the original
-     * method uses a prepared SQL statement which was inefficient. We use a filtered list here which results in an
-     * "always true" predicate which is more efficient in it's use in this class and uses less lines of code making this
-     * method easily readable. This method is primarily used in the monthRadio() method. This method filters the given
-     * list based on the contents of the appointments table and by the current day and end of the month.
-     * </p>
      *
      * @param aList the appointments list
      */
@@ -873,12 +960,15 @@ public class AppointmentsScreenController implements Initializable {
         LocalDateTime endOfMonth = now.with(TemporalAdjusters.lastDayOfMonth());
 
         FilteredList<Appointment> resultEndOfMonth = new FilteredList<>(aList);
-        resultEndOfMonth.setPredicate(a ->
-        {
-            LocalDateTime date = a.getStart();
-            return (date.isEqual(now) || date.isAfter(now)) && (date.isBefore(endOfMonth) || date.isEqual(endOfMonth));
+        resultEndOfMonth.setPredicate(new Predicate<Appointment>() {
+            @Override
+            public boolean test(Appointment a) {
+                LocalDateTime date = a.getStart();
+                return (date.isEqual(now) || date.isAfter(now)) && (date.isBefore(endOfMonth) || date.isEqual(endOfMonth));
+            }
         });
         appointmentTable.setItems(resultEndOfMonth);
+
     }
 
     /**

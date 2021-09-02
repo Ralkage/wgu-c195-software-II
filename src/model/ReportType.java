@@ -7,10 +7,12 @@ package model;
  * Software II - C195
  */
 public class ReportType {
-    private String day;
+    private String country;
     private String month;
     private String type;
     private int total;
+    private int numberOfCustomers;
+
 
     /**
      * Instantiates a new Report type.
@@ -28,29 +30,24 @@ public class ReportType {
     /**
      * Instantiates a new Report type.
      *
-     * @param day   the day
-     * @param total the total
+     * @param country   the day
+     * @param numberOfCustomers the total
      */
-    public ReportType(String day, int total) {
-        this.day = day;
-        this.total = total;
-    }
-    /**
-     * Gets day.
-     *
-     * @return the day
-     */
-    public String getDay() {
-        return day;
+    public ReportType(String country, int numberOfCustomers) {
+        this.country = country;
+        this.numberOfCustomers = numberOfCustomers;
     }
 
-    /**
-     * Sets day.
-     *
-     * @param day the day
-     */
-    public void setDay(String day) {
-        this.day = day;
+    public ReportType(int total) {
+        this.total = total;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     /**
@@ -105,5 +102,13 @@ public class ReportType {
      */
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public int getNumberOfCustomers() {
+        return numberOfCustomers;
+    }
+
+    public void setNumberOfCustomers(int numberOfCustomers) {
+        this.numberOfCustomers = numberOfCustomers;
     }
 }

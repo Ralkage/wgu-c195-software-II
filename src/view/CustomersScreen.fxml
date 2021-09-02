@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="420.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11"
+            prefHeight="420.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.2"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomersScreenController">
     <children>
         <VBox alignment="CENTER" layoutY="2.0" pickOnBounds="false" prefHeight="420.0" prefWidth="1200.0">

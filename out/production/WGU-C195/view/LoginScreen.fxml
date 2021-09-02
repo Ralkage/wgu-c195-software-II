@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginScreenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginScreenController">
     <bottom>
         <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
@@ -30,8 +30,8 @@
             <TextField fx:id="usernameField" prefHeight="35.0" prefWidth="260.0" promptText="Username" />
             <TextField fx:id="passwordField" layoutX="10.0" layoutY="10.0" prefHeight="35.0" prefWidth="260.0" promptText="Password" />
             <HBox prefHeight="35.0" prefWidth="260.0">
-                <Label fx:id="countryLabel" contentDisplay="CENTER" prefHeight="35.0" prefWidth="260.0" text="Country:" />
-                <Label fx:id="locationLabel" contentDisplay="CENTER" prefHeight="17.0" prefWidth="418.0" />
+                <Label fx:id="locationLabel" contentDisplay="CENTER" prefHeight="35.0" prefWidth="260.0" text="Location:" />
+                <Label fx:id="zoneIDLabel" contentDisplay="CENTER" prefHeight="17.0" prefWidth="341.0" />
             </HBox>
             <Button fx:id="LogIn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionLogIn" prefHeight="35.0" prefWidth="260.0" text="Log In" />
             <HBox prefHeight="100.0" prefWidth="200.0" />

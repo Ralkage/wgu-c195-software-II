@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -45,6 +47,10 @@ public class ReportsScreenController implements Initializable {
      * The Custom report tab.
      */
     public Tab customReportTab;
+    /**
+     * The Pie Chart report tab.
+     */
+    public Tab pieChartTab;
     /**
      * The Stage.
      */
@@ -95,23 +101,23 @@ public class ReportsScreenController implements Initializable {
     @FXML
     private TableColumn<Appointment, Integer> customerIdColumn;
     @FXML
-    private TableColumn<ReportType, String> dayColumn;
+    private TableColumn<ReportType, String> countryColumn;
     @FXML
     private TableColumn<ReportType, String> customReportTotalColumn;
+    @FXML
+    private PieChart customerPie;
 
     /**
      * The JavaFX initialize method.
+     *
      * @param url the url
-     * @param rb the resource bundle
+     * @param rb  the resource bundle
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        dayColumn.setCellValueFactory(new PropertyValueFactory<>("day"));
         monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
         reportTypeColumn.setCellValueFactory(new PropertyValueFactory<>("Type"));
         totalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
-        customReportTotalColumn.setCellValueFactory(new PropertyValueFactory<>("total"));
-
 
         appointmentColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentID"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -292,6 +298,7 @@ public class ReportsScreenController implements Initializable {
                 int contactID = rs.getInt("Contact_ID");
 
                 int userID = User.getUserId();
+                String userName = rs.getString("User_Name");
 
                 AppointmentListReport.add(new Appointment(appointmentID, title, description,
                         location, type, start, end, createdDate, createdBy, lastUpdate,
@@ -314,26 +321,34 @@ public class ReportsScreenController implements Initializable {
      * The populate custom report method.
      * <p>
      * This is the custom report I created for section A3f of the requirements section. This report calculates the total
-     * number of appointments by day of the week.
+     * number of customers by country and presents this data in a JavaFX pie chart.
      * </p>
      */
     private void populateCustomReport() {
         try {
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT DAYNAME(Start) AS Days, COUNT(*) AS Total "
-                            + "FROM appointments "
-                            + "GROUP BY Days ");
+            ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+            ArrayList<String> country = new ArrayList<>();
+            ArrayList<Integer> numOfCustomers = new ArrayList<>();
+
+            PreparedStatement ps = conn.prepareStatement("SELECT COUNT(customers.Customer_ID) AS NumOfCustomers, " +
+                    "countries.Country FROM customers " +
+                    "LEFT JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID " +
+                    "LEFT JOIN countries ON first_level_divisions.COUNTRY_ID = countries.Country_ID " +
+                    "GROUP BY Country");
+
+            customerPie.setTitle("Customers by Country");
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                String day = rs.getString("Days");
-                int total = rs.getInt("Total");
+                pieData.add(new PieChart.Data(rs.getString("countries.Country"),
+                        rs.getInt("NumOfCustomers")));
 
-                reportList.add(new ReportType(day, total));
-
+                country.add(rs.getString("countries.Country"));
+                numOfCustomers.add(rs.getInt("NumOfCustomers"));
             }
-            typeDayTable.setItems(reportList);
+
+            customerPie.setData(pieData);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

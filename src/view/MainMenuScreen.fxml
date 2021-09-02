@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="300.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/11"
+            prefHeight="300.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/11.0.2"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
     <children>
         <HBox prefHeight="97.0" prefWidth="480.0">

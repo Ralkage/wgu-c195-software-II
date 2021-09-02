@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
@@ -68,9 +69,9 @@ public class LoginScreenController implements Initializable {
     @FXML
     private TextField passwordField;
     @FXML
-    private Label countryLabel;
-    @FXML
     private Label locationLabel;
+    @FXML
+    private Label zoneIDLabel;
 
     /**
      * The JavaFX initialize method.
@@ -89,8 +90,8 @@ public class LoginScreenController implements Initializable {
         appNameLabel.setText(rb.getString("AppName"));
         usernameField.setPromptText(rb.getString("Username"));
         passwordField.setPromptText(rb.getString("Password"));
-        countryLabel.setText(rb.getString("Country"));
         locationLabel.setText(rb.getString("Location"));
+        zoneIDLabel.setText(String.valueOf(ZoneId.systemDefault()));
         LogIn.setText(rb.getString("LogIn"));
         ExitButton.setText(rb.getString("Exit"));
     }
@@ -236,9 +237,7 @@ public class LoginScreenController implements Initializable {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
-
 
     /**
      * The on action exit application method.
